@@ -22,6 +22,37 @@ C:\Users\<你的用户名>\.workbuddy\skills\zongce-bonus-cert-docx\
 
 放好后重启会话即可。也可以直接调用脚本，不依赖 WorkBuddy。
 
+### 让别人帮你装（防装错）
+
+只说"帮我装 GitHub 上那个 skill"，AI 会自己猜**装到哪个目录**和**目录叫什么名**——这两处最容易错。把下面整段发给对方的 AI，它装完会回报路径和 name，你一眼就能核对：
+
+```
+请从 https://github.com/fszhang134888-lab/zongce-cert-docx 安装一个 Agent Skill。
+
+硬性要求:
+1. 目标目录名必须是 zongce-bonus-cert-docx,不是仓库名 zongce-cert-docx。
+   因为 SKILL.md 里的 name 字段写的是 zongce-bonus-cert-docx。
+2. SKILL.md 必须直接放在这个目录的根部,不要多套一层子文件夹。
+3. 装完后自检并回报:
+   - 列出该目录下的文件,确认 SKILL.md 存在
+   - 告诉我你这台机器上 skill 的实际安装路径
+   - 读出 SKILL.md 的 name 字段,确认是 zongce-bonus-cert-docx
+
+依赖:python-docx、pymupdf、Pillow。生成 PDF 需要 Windows + Microsoft Word。
+```
+
+三种常见装错方式，对照检查：
+
+| 错法 | 后果 |
+|---|---|
+| 目录名抄成仓库名 `zongce-cert-docx` | 按目录名注册的软件里，触发词对不上 |
+| clone 后多套一层子目录 | SKILL.md 不在根目录，扫不到 |
+| 装到了别的 skills 根目录 | 重启后完全没这个 skill |
+
+**最终验证**：让对方的 AI 生成一份综测加分证明样例。能正常出 docx，就是装对了——这比任何路径检查都靠谱。
+
+> 以上假设对方软件支持 Agent Skills 机制（能识别 `SKILL.md`），如 Claude Code、WorkBuddy。若软件只支持 rules / 自定义指令，则没有"安装"概念，需把 `SKILL.md` 内容作为提示词喂给它。
+
 ## 用法
 
 ```bash
