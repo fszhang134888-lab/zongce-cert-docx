@@ -10,36 +10,27 @@
 
 ## 安装
 
-把整个目录放到 WorkBuddy 的 skills 目录下：
+**目录名必须是 `zongce-bonus-cert-docx`**（不是仓库名 `zongce-cert-docx`），因为 `SKILL.md` 里的 `name` 字段就是这个。`SKILL.md` 要直接放在该目录根部。
 
-```bash
-# Windows
-C:\Users\<你的用户名>\.workbuddy\skills\zongce-bonus-cert-docx\
+各 AI 软件的 skills 目录不同，例如 WorkBuddy 是 `~/.workbuddy/skills/`，Claude Code 是 `~/.claude/skills/`。装完重启会话。
 
-# macOS / Linux
-~/.workbuddy/skills/zongce-bonus-cert-docx/
-```
+也可以直接调用脚本，不依赖任何 AI 软件。
 
-放好后重启会话即可。也可以直接调用脚本，不依赖 WorkBuddy。
+### 让别人帮你装（通用话术，防装错）
 
-### 让别人帮你装（防装错）
-
-只说"帮我装 GitHub 上那个 skill"，AI 会自己猜**装到哪个目录**和**目录叫什么名**——这两处最容易错。把下面整段发给对方的 AI，它装完会回报路径和 name，你一眼就能核对：
+只说"帮我装 GitHub 上那个 skill"，AI 会自己猜**装到哪个目录**和**目录叫什么名**——这两处最容易错。把下面整段发给对方的 AI：
 
 ```
-请从 https://github.com/fszhang134888-lab/zongce-cert-docx 安装一个 Agent Skill。
-
-硬性要求:
-1. 目标目录名必须是 zongce-bonus-cert-docx,不是仓库名 zongce-cert-docx。
-   因为 SKILL.md 里的 name 字段写的是 zongce-bonus-cert-docx。
-2. SKILL.md 必须直接放在这个目录的根部,不要多套一层子文件夹。
-3. 装完后自检并回报:
-   - 列出该目录下的文件,确认 SKILL.md 存在
-   - 告诉我你这台机器上 skill 的实际安装路径
-   - 读出 SKILL.md 的 name 字段,确认是 zongce-bonus-cert-docx
-
-依赖:python-docx、pymupdf、Pillow。生成 PDF 需要 Windows + Microsoft Word。
+帮我从 https://github.com/fszhang134888-lab/zongce-cert-docx 安装这个 Agent Skill。
+先确认你自己是什么 AI 软件，再装到你这个软件对应的 skills 目录下；目录名必须是
+zongce-bonus-cert-docx（不是仓库名 zongce-cert-docx，因为 SKILL.md 里的 name 字段是这个），
+SKILL.md 要直接放在该目录根部。装完请核对：name 字段是 zongce-bonus-cert-docx、
+scripts/ 下四个脚本齐全（gen_cert.py、verify_fonts.py、verify_pdf.py、docx2pdf.ps1），
+运行 python scripts/gen_cert.py --demo 样例.docx 确认能生成 docx，并回报你的软件名、
+安装路径和校验结果。
 ```
+
+话术里**不写死软件名和路径**，让对方的 AI 自己认软件、自己找目录；只把跟软件无关的硬指标写死（目录名、name 字段、脚本清单、生成自检）。它装完会回报软件名 + 路径 + 校验结果，你一眼就能核对。
 
 三种常见装错方式，对照检查：
 
@@ -52,6 +43,11 @@ C:\Users\<你的用户名>\.workbuddy\skills\zongce-bonus-cert-docx\
 **最终验证**：让对方的 AI 生成一份综测加分证明样例。能正常出 docx，就是装对了——这比任何路径检查都靠谱。
 
 > 以上假设对方软件支持 Agent Skills 机制（能识别 `SKILL.md`），如 Claude Code、WorkBuddy。若软件只支持 rules / 自定义指令，则没有"安装"概念，需把 `SKILL.md` 内容作为提示词喂给它。
+
+## 依赖与平台
+
+- Python 3.9+，`python-docx`、`pymupdf`、`Pillow`
+- 生成 docx 跨平台可用；**只有导出 PDF 那步需要 Windows + Microsoft Word**（`docx2pdf.ps1` 是 Word COM 调用的留存版本）
 
 ## 用法
 
@@ -84,12 +80,6 @@ python verify_pdf.py 综测加分证明.pdf --docx 综测加分证明.docx --tit
 - `roster`：每个 `{label, names}` 是一个班；姓名超过 4 个自动续行，续行不再重复班级
 - 正文支持两个占位符：`{n}` = 名单总人数，`{first}` = 名单第一位姓名
 - `pad_two_char_names`：默认 `true`，两字姓名中间补一个全角空格撑成三字宽（学院成品的做法）
-
-## 依赖
-
-- Python 3.9+
-- `python-docx`、`pymupdf`、`Pillow`
-- Windows + Microsoft Word（用于导出 PDF）；`docx2pdf.ps1` 是 Word COM 调用的留存版本
 
 ## 文件结构
 
